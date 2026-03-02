@@ -1,0 +1,32 @@
+services:
+  # Base de datos
+  db:
+    image: postgres:15-alpine
+    container_name: proyecto-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: kimdokja
+      POSTGRES_DB: proyecto
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./pagila.sql:/docker-entrypoint-initdb.d/01-pagila.sql
+
+  # API
+  api:
+    build: .
+    container_name: proyecto-api
+    restart: always
+    command: flask --app src.app:create_app run --host=0.0.0.0 --port=5000
+    ports:
+      - "5003:5000"
+    environment:
+      DATABASE_URL: postgresql://postgres:kimdokja@db:5432/proyecto
+      FLASK_DEBUG: "1"
+    volumes:
+      - .:/app
+
+volumes:
+  postgres_data:
