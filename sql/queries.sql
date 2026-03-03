@@ -40,3 +40,9 @@ WHERE (customer_id, amount, DATE(payment_date)) IN (
 -- Q6 — “Clientes con riesgo” (mora)
 
 -- Q7 — Integridad/consistencia: inventario con rentas activas duplicadas
+SELECT inventory_id, ARRAY_AGG(rental_id ORDER BY rental_id) AS rental_ids, COUNT(*) AS active_rentals_count
+FROM Rental
+WHERE return_date IS NULL
+GROUP BY inventory_id
+HAVING COUNT(*) > 1
+ORDER BY active_rentals_count DESC;
