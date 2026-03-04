@@ -22,6 +22,16 @@ WHERE rn <=3;
 
 -- CTES
 -- Q3 — Inventario disponible por tienda (CTE)
+WITH unavailable_rentals AS(
+	SELECT inventory_id
+	FROM Rental
+	WHERE return_date is NULL)
+
+SELECT i.store_id, COUNT(i.inventory_id) AS available_inventory_count
+FROM Inventory AS i
+LEFT JOIN unavailable_rentals AS u ON i.inventory_id = u.inventory_id
+WHERE u.inventory_id is NULL
+GROUP BY store_id;
 
 -- Q4 — Análisis de retrasos: rentas tardías agregadas por categoría (CTE)
 
