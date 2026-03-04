@@ -1,28 +1,18 @@
 import random, time
 from sqlalchemy.exc import OperationalError
 
-_RETRYABLE_PGCODES = {"40P01", "40001"}
-
-def is_retryable(exc: Exception) -> bool:
-    cause = exc.__cause__ or exc.__context__
-    if cause and hasattr(cause, "pgcode"):
-        return cause.pgcode in _RETRYABLE_PGCODES
-
-    if isinstance(exc, OperationalError):
-        orig = getattr(exc, "orig", None)
-        if orig and hasattr(orig, "pgcode"):
-            return orig.pgcode in _RETRYABLE_PGCODES
-
-    return False
-
-
-def with_retry(fn, max_retries: int, base: float):
-    for attempt in range(max_retries + 1):
+def reintentos(funcion, max_intentos=3):
+    for intento in range(max_intentos):
         try:
-            return fn()
-        except Exception as exc:
-            if is_retryable(exc) and attempt < max_retries:
-                sleep = base * (2 ** attempt) + random.uniform(0, base)
-                time.sleep(sleep)
+            return funcion()
+        except OperationalError as error:
+            mensaje = str(error)
+            if "40P01" in mensaje or "40001" in mensaje:
+                if intento == max_intentos - 1:
+                    raise error
+
+                print("Reintentando")
+                tiempo = 0.5 * (intento + 1)
+                time.sleep(tiempo)
             else:
-                raise
+                raise error

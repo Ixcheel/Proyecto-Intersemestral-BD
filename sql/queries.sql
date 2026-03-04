@@ -37,6 +37,8 @@ WHERE (customer_id, amount, DATE(payment_date)) IN (
     HAVING COUNT(*) > 1
 );
 
+-- Excluimos el umbral porque no hay cantidades inusuales despues de checar la información de la tabla simplemente cuenta con pagos repetidos
+
 -- Q6 — “Clientes con riesgo” (mora)
 
 -- Q7 — Integridad/consistencia: inventario con rentas activas duplicadas
