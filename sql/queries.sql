@@ -48,6 +48,15 @@ WHERE (customer_id, amount, DATE(payment_date)) IN (
 );
 
 -- Q6 — “Clientes con riesgo” (mora)
+SELECT r.customer_id, COUNT(r.return_date) AS late_returns_count, MAX(r.return_date) AS last_late_return_date
+FROM Rental AS r
+
+JOIN Inventory AS i ON r.inventory_id = i.inventory_id
+JOIN Film AS f ON i.film_id = f.film_id
+WHERE r.return_date > (r.rental_date + (f.rental_duration * INTERVAL '1 day'))
+
+GROUP BY r.customer_id
+HAVING COUNT(*)>1;
 
 -- Q7 — Integridad/consistencia: inventario con rentas activas duplicadas
 SELECT inventory_id, ARRAY_AGG(rental_id ORDER BY rental_id) AS rental_ids, COUNT(*) AS active_rentals_count
