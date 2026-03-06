@@ -57,3 +57,26 @@ SELECT * FROM audit_log;
 
 
 -- 7.2 Trigger de regla de negocio
+-- Impedir renta si el cliente supera X rentas activas.
+CREATE OR REPLACE FUNCTION avoid_rental()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+DECLARE active_rental INT; 
+BEGIN 
+    SELECT COUNT(*) 
+    INTO active_rental 
+    FROM Rental 
+    WHERE customer_id = NEW.customer_id AND return_date IS NULL;
+
+    IF active_rental >= 5 THEN 
+        RAISE EXCEPTION 'No se puede realizar la renta ya que el cliente tendría más de 5 rentas activas.';
+    END IF; 
+	RETURN NEW; 
+END;
+$$;
+
+CREATE TRIGGER trg_avoid_rental
+BEFORE INSERT ON Rental
+FOR EACH ROW
+EXECUTE FUNCTION avoid_rental();
