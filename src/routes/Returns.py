@@ -4,7 +4,7 @@ from sqlalchemy import func
 
 import src.extensions as db
 from ..models.models import Rental
-from ..utils.Errors import with_retry
+from ..utils.Errors import reintentos
 from ..config import Config
 
 returns_blueprint = Blueprint("returns", __name__)
