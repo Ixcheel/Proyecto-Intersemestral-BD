@@ -2,6 +2,24 @@
 -- Window function
 
 -- Q1 — Top 10 clientes por gasto con ranking
+SELECT *
+FROM (
+    SELECT
+        DENSE_RANK() OVER (ORDER BY SUM(p.amount) DESC) AS rank,
+        c.customer_id,
+        c.first_name,
+        c.last_name,
+        SUM(p.amount) AS total_paid
+    FROM payment p
+    JOIN customer c
+        ON p.customer_id = c.customer_id
+    GROUP BY
+        c.customer_id,
+        c.first_name,
+        c.last_name
+) ranked_customers
+WHERE rank <= 10
+ORDER BY rank;
 
 -- Q2 — Top 3 películas por tienda (por # de rentas)
 WITH top3 AS(
@@ -37,7 +55,6 @@ GROUP BY store_id;
 
 -- Consultas operativas
 -- Q5 — Auditoría: pagos sospechosos
--- Enfoque en pagos repetidos el mismo día por el mismo cliente y monto
 SELECT payment_id, customer_id, amount, payment_date, 'Pago repetido' AS flag_reason
 FROM Payment
 WHERE (customer_id, amount, DATE(payment_date)) IN (
