@@ -1,3 +1,4 @@
+
 from flask import Blueprint, request, jsonify
 from sqlalchemy.exc import OperationalError, IntegrityError
 from sqlalchemy import func
@@ -7,6 +8,7 @@ from ..models.models import Rental
 from ..utils.Errors import reintentos
 from ..config import Config
 
+
 returns_blueprint = Blueprint("returns", __name__)
 
 def make_session(isolation_level: str):
@@ -14,10 +16,8 @@ def make_session(isolation_level: str):
     session.connection(execution_options={"isolation_level": isolation_level})
     return session
 
-@returns_blueprint.route("/returns", methods=["POST"])
+@returns_blueprint.route("/returns/<int:rental_id>", methods=["POST"])
 def crear_retunrs():
-    data = request.get_json()
-    rental_id = data.get("rental_id")
     
     def _do_create():
         session = make_session("SERIALIZABLE")
@@ -47,4 +47,4 @@ def crear_retunrs():
             session.close()
 
     return reintentos(_do_create, Config.MAX_RETRIES)
-
+    

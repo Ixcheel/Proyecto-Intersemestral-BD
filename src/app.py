@@ -9,6 +9,7 @@ def create_app():
     init_db(Config.DATABASE_URL)
 
     app.register_blueprint(rentals_blueprint)
+    app.register_blueprint(returns_blueprint)
 
     return app
 
