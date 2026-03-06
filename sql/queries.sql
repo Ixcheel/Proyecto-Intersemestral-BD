@@ -37,7 +37,6 @@ GROUP BY store_id;
 
 -- Consultas operativas
 -- Q5 — Auditoría: pagos sospechosos
--- Enfoque en pagos repetidos el mismo día por el mismo cliente y monto
 SELECT payment_id, customer_id, amount, payment_date, 'Pago repetido' AS flag_reason
 FROM Payment
 WHERE (customer_id, amount, DATE(payment_date)) IN (
