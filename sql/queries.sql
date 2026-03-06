@@ -45,7 +45,8 @@ WHERE (customer_id, amount, DATE(payment_date)) IN (
     FROM Payment
     GROUP BY customer_id, amount, DATE(payment_date)
     HAVING COUNT(*) > 1
-);
+)
+OR amount >= 1000;
 
 -- Q6 — “Clientes con riesgo” (mora)
 SELECT r.customer_id, COUNT(r.return_date) AS late_returns_count, MAX(r.return_date) AS last_late_return_date
