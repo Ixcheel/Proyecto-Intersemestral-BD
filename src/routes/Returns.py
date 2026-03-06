@@ -1,4 +1,3 @@
-
 from flask import Blueprint, request, jsonify
 from sqlalchemy.exc import OperationalError, IntegrityError
 from sqlalchemy import func
@@ -17,7 +16,7 @@ def make_session(isolation_level: str):
     return session
 
 @returns_blueprint.route("/returns/<int:rental_id>", methods=["POST"])
-def crear_retunrs():
+def crear_retunrs(rental_id):
     
     def _do_create():
         session = make_session("SERIALIZABLE")
