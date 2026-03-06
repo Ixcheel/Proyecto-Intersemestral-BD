@@ -2,6 +2,24 @@
 -- Window function
 
 -- Q1 — Top 10 clientes por gasto con ranking
+SELECT *
+FROM (
+    SELECT
+        DENSE_RANK() OVER (ORDER BY SUM(p.amount) DESC) AS rank,
+        c.customer_id,
+        c.first_name,
+        c.last_name,
+        SUM(p.amount) AS total_paid
+    FROM payment p
+    JOIN customer c
+        ON p.customer_id = c.customer_id
+    GROUP BY
+        c.customer_id,
+        c.first_name,
+        c.last_name
+) ranked_customers
+WHERE rank <= 10
+ORDER BY rank;
 
 -- Q2 — Top 3 películas por tienda (por # de rentas)
 WITH top3 AS(
