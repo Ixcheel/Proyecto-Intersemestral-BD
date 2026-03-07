@@ -4,6 +4,8 @@ from .extensions import db,migrate, init_db
 from .routes.Rentals import rentals_blueprint
 from .models.models import Inventory, Rental
 from .routes.Payments import payments_blueprint
+from .routes.Returns import returns_blueprint
+
 
 def create_app():
     app = Flask(__name__)
@@ -11,7 +13,7 @@ def create_app():
 
     app.register_blueprint(rentals_blueprint)
     app.register_blueprint(payments_blueprint)
-
+    app.register_blueprint(returns_blueprint)
 
     return app
 

@@ -1,3 +1,6 @@
+--Script A
+-- Simula múltiples clientes intentando rentar el mismo inventory_id
+-- Sin proteger el acceso concurrente correctamente
 
 \set iid 1
 \set cid random(1, 599)

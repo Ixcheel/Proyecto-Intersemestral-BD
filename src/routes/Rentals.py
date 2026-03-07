@@ -4,7 +4,7 @@ from sqlalchemy import func
 
 import src.extensions as db
 from ..models.models import Rental, Customer, Staff, Inventory
-from ..utils.Errors import with_retry
+from ..utils.Errors import reintentos
 from ..config import Config
 
 rentals_blueprint = Blueprint("rentals", __name__)
@@ -60,4 +60,4 @@ def crear_renta():
         finally:
             session.close()
 
-    return with_retry(_do_create, Config.MAX_RETRIES, Config.BASE_BACKOFF)
+    return reintentos(_do_create, Config.MAX_RETRIES)
